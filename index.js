@@ -490,7 +490,7 @@ function try_callback(callback, reply) {
 }
 
 // hgetall converts its replies to an Object.  If the reply is empty, null is returned.
-function reply_to_object(reply) {
+exports.reply_to_object = function reply_to_object(reply) {
     var obj = {}, j, jl, key, val;
 
     if (reply.length === 0) {
@@ -549,7 +549,7 @@ RedisClient.prototype.return_reply = function (reply) {
 
             // TODO - confusing and error-prone that hgetall is special cased in two places
             if (reply && 'hgetall' === command_obj.command.toLowerCase()) {
-                reply = reply_to_object(reply);
+                reply = exports.reply_to_object(reply);
             }
 
             try_callback(command_obj.callback, reply);
@@ -988,7 +988,7 @@ Multi.prototype.exec = function (callback) {
 
                 // TODO - confusing and error-prone that hgetall is special cased in two places
                 if (reply && args[0].toLowerCase() === "hgetall") {
-                    replies[i - 1] = reply = reply_to_object(reply);
+                    replies[i - 1] = reply = exports.reply_to_object(reply);
                 }
 
                 if (typeof args[args.length - 1] === "function") {
